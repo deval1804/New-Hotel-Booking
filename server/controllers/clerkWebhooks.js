@@ -65,6 +65,8 @@ const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"]
     };
 
+    console.log("Saving user:", userData);
+
     const payload = await whook.verify(req.body, headers);
 
     const { data, type } = payload;
