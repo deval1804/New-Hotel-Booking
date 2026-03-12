@@ -38,13 +38,16 @@ import clerkWebhooks from "./controllers/clerkWebhooks.js";
 connectDB();
 
 const app = express();
+
 app.use(cors());
 
-// 🔹 Clerk webhook route (RAW BODY required)
-app.use("/api/clerk", express.raw({ type: "application/json" }), clerkWebhooks);
+// ⭐ webhook raw body (important)
+app.use("/api/clerk", express.raw({ type: "application/json" }));
+app.use("/api/clerk", clerkWebhooks);
 
-// 🔹 Normal middleware
+// normal json middleware
 app.use(express.json());
+
 app.use(clerkMiddleware());
 
 app.get("/", (req, res) => {
