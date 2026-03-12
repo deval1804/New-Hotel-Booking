@@ -6,8 +6,8 @@ const useSchema = mongoose.Schema({
     email: {type: String, required: true},
     image: {type: String, required: true},
     role: {type: String, enum: ["user", "hotelOwner"], default: "user"},
-    recentSearchedCities: [{type: String}],
-    
+    // recentSearchedCities: [{type: String}],
+    recentSearchedCities: []
 },{timestamps: true});
 
 const User = mongoose.model("User", useSchema);
