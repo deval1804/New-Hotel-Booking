@@ -11,12 +11,13 @@ import LayOut from "./Pages/hotelOwner/LayOut";
 import Dashboard from "./Pages/hotelOwner/Dashboard";
 import Addroom from "./Pages/hotelOwner/Addroom";
 import ListRoom from "./Pages/hotelOwner/ListRoom";
-
+import {Toaster} from 'react-hot-toast'
 const App = () => {
 
   const isOwnerPath = useLocation().pathname.includes("owner")
   return (
     <div>
+      <Toaster />
       {!isOwnerPath && <Navbar />}
       {false && <HotelReg />}
       <div className="min-h-[70vh]">
@@ -25,14 +26,14 @@ const App = () => {
           <Route path="/rooms" element={<AllRoom />} />
           <Route path="/rooms/:id" element={<RoomDetail />} />
           <Route path="/my-bookings" element={<MyBookings />} />
-       <Route path="/owner/*" element={<LayOut />} >
-          <Route index element={<Dashboard />} />
-          <Route path="add-room" element={<Addroom />} />
-          <Route path="list-room" element={<ListRoom />} />
-          {/* <Route path="add-room" element={<Addroom />} />
+          <Route path="/owner/*" element={<LayOut />} >
+            <Route index element={<Dashboard />} />
+            <Route path="add-room" element={<Addroom />} />
+            <Route path="list-room" element={<ListRoom />} />
+            {/* <Route path="add-room" element={<Addroom />} />
           <Route path="list-room" element={<ListRoom />} /> */}
 
-        </Route>
+          </Route>
 
 
         </Routes>
