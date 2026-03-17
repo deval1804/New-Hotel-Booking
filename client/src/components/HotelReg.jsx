@@ -17,9 +17,7 @@ const HotelReg = () => {
   try {
     event.preventDefault();
 
-    const token = await getToken();
-
-    console.log("TOKEN:", token);
+    const token = await getToken(); // template ki zarurat nahi
 
     const { data } = await axios.post(
       "/api/hotel",

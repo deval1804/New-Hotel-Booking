@@ -74,20 +74,22 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import connectDB from "./configs/db.js";
+import connectCloudinary from "./configs/cloudinary.js";
+
 import { clerkMiddleware } from "@clerk/express";
+
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoutes.js";
 import hotelRouter from "./routes/hotelRoutes.js";
-import connectCloudinary from "./configs/cloudinary.js";
 import roomRouter from "./routes/roomRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
+
+const app = express();
 
 connectDB();
 connectCloudinary();
 
-const app = express();
-
-// ✅ Proper CORS configuration
+// CORS
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -95,16 +97,17 @@ app.use(
   })
 );
 
-// ⭐ Webhook raw body (important for Clerk)
+// Clerk Middleware
+app.use(clerkMiddleware());
+
+// JSON parser
+app.use(express.json());
+
+// Clerk webhook (RAW BODY)
 app.use("/api/clerk", express.raw({ type: "application/json" }));
 app.use("/api/clerk", clerkWebhooks);
 
-// Normal JSON middleware
-app.use(express.json());
-
-// ✅ Clerk middleware AFTER json
-app.use(clerkMiddleware());
-
+// Test route
 app.get("/", (req, res) => {
   res.send("API is working");
 });

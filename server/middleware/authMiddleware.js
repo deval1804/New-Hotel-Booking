@@ -34,19 +34,22 @@ import User from "../models/User.js";
 export const protect = async (req, res, next) => {
   try {
 
-    console.log("AUTH DATA:", req.auth);
-    console.log("HEADERS:", req.headers.authorization);
-
-    const { userId } = req.auth || {};
+    const { userId } = req.auth();
 
     if (!userId) {
-      return res.json({ success: false, message: "not authenticated" });
+      return res.json({
+        success: false,
+        message: "not authenticated",
+      });
     }
 
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.json({ success: false, message: "User not found in DB" });
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     req.user = user;
@@ -55,6 +58,9 @@ export const protect = async (req, res, next) => {
 
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: error.message });
+    res.json({
+      success: false,
+      message: error.message,
+    });
   }
 };
