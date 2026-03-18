@@ -176,17 +176,7 @@ const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"]
     };
 
-    // ⭐ Yeh fix hai - body ko string banao
-    let body;
-    if (typeof req.body === "string") {
-      body = req.body;
-    } else if (Buffer.isBuffer(req.body)) {
-      body = req.body.toString("utf8");
-    } else {
-      body = JSON.stringify(req.body);
-    }
-
-    const evt = whook.verify(body, headers);  // await nahi - sync hai
+    const evt = whook.verify(req.rawBody, headers);
 
     const { data, type } = evt;
 
