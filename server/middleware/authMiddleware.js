@@ -16,28 +16,27 @@
 import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
-    try {
+  try {
 
-        const { userId } = req.auth;
-
-        if (!userId) {
-            return res.json({ success: false, message: "Not authenticated" });
-        }
-
-        let user = await User.findById(userId);
-
-        // ⭐ agar user DB me nahi mila to create kar do
-        if (!user) {
-            user = await User.create({
-                _id: userId
-            });
-        }
-
-        req.user = user;
-
-        next();
-
-    } catch (error) {
-        res.json({ success: false, message: error.message });
+    if (!req.auth || !req.auth.userId) {
+      return res.json({ success: false, message: "Not authenticated" });
     }
+
+    const userId = req.auth.userId;
+
+    let user = await User.findById(userId);
+
+    if (!user) {
+      user = await User.create({
+        _id: userId
+      });
+    }
+
+    req.user = user;
+
+    next();
+
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
 };
