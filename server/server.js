@@ -48,7 +48,7 @@ const app = express();
 app.use(cors());
 
 // ⭐ webhook raw body (important)
-app.use("/api/clerk", express.raw({ type: "application/json" }));
+// app.use("/api/clerk", express.raw({ type: "application/json" }));
 app.use("/api/clerk", clerkWebhooks);
 
 // normal json middleware
