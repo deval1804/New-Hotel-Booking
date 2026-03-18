@@ -17,7 +17,6 @@ const HotelReg = () => {
   event.preventDefault();
 
   try {
-
     const token = await getToken();
 
     if (!token) {
@@ -31,7 +30,9 @@ const HotelReg = () => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        withCredentials: true
       }
     );
 
@@ -45,7 +46,7 @@ const HotelReg = () => {
 
   } catch (error) {
     console.log(error);
-    toast.error(error.response?.data?.message || "Something went wrong");
+    toast.error("Something went wrong");
   }
 };
 
