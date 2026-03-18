@@ -45,7 +45,14 @@ connectCloudinary();
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://your-frontend-domain.vercel.app"
+    ],
+    credentials: true
+}));
 
 // ⭐ webhook raw body (important)
 app.post("/api/clerk", express.raw({ type: "application/json" }), clerkWebhooks);

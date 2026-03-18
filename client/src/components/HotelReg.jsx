@@ -14,41 +14,40 @@ const HotelReg = () => {
     const [city, setCity] = useState("")
 
     const onSubmitHandler = async (event) => {
-  event.preventDefault();
+        event.preventDefault();
 
-  try {
-    const token = await getToken();
+        try {
+            const token = await getToken();
 
-    if (!token) {
-      toast.error("Please login first");
-      return;
-    }
+            if (!token) {
+                toast.error("Please login first");
+                return;
+            }
 
-    const { data } = await axios.post(
-      `/api/hotel`,
-      { name, contact, address, city },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        withCredentials: true
-      }
-    );
+            const { data } = await axios.post(
+                `/api/hotel`,
+                { name, contact, address, city },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true
+                }
+            );
 
-    if (data.success) {
-      toast.success(data.message);
-      setIsOwner(true);
-      setShowHotelReg(false);
-    } else {
-      toast.error(data.message);
-    }
+            if (data.success) {
+                toast.success(data.message);
+                setIsOwner(true);
+                setShowHotelReg(false);
+            } else {
+                toast.error(data.message);
+            }
 
-  } catch (error) {
-    console.log(error);
-    toast.error("Something went wrong");
-  }
-};
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong");
+        }
+    };
 
 
     return (
