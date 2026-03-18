@@ -5,7 +5,7 @@ export const registerHotel = async (req, res) => {
     try {
         const { name, address, contact, city } = req.body;
         const owner = req.user._id;
-
+        console.log("User:", req.user);
         // Check if the user is already registered
         const hotel = await Hotel.findOne({ owner });
         if (hotel) {
