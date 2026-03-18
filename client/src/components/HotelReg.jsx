@@ -13,34 +13,28 @@ const HotelReg = () => {
     const [contact, setContact] = useState("")
     const [city, setCity] = useState("")
 
-   const onSubmitHandler = async (event) => {
-  try {
-    event.preventDefault();
+    const onSubmitHandler = async (event) => {
+        try {
+            event.preventDefault();
 
-    const token = await getToken(); // template ki zarurat nahi
+            const { data } = await axios.post(
+                `/api/hotel`,
+                { name, contact, address, city },
+                { headers: { Authorization: `Bearer ${await getToken()}` } }
+            )
 
-    const { data } = await axios.post(
-      "/api/hotel",
-      { name, contact, address, city },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+            if (data.success) {
+                toast.success(data.message)
+                setIsOwner(true)
+                setShowHotelReg(false);
+            } else {
+                toast.error(data.message)
+            }
 
-    if (data.success) {
-      toast.success(data.message);
-      setIsOwner(true);
-      setShowHotelReg(false);
-    } else {
-      toast.error(data.message);
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
-
-  } catch (error) {
-    toast.error(error.message);
-  }
-};
 
 
     return (
