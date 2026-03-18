@@ -23,7 +23,7 @@ export const protect = async (req, res, next) => {
         if (!userId) {
             return res.json({ success: false, message: "Not authenticated" });
         }
-console.log("Auth Data:", req.auth);
+
         let user = await User.findById(userId);
 
         // ⭐ agar user DB me nahi mila to create kar do
