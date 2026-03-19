@@ -1,144 +1,58 @@
-// import axios from "axios"
-// import { createContext, useContext, useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { useUser, useAuth } from "@clerk/clerk-react";
-// import toast from "react-hot-toast";
-
-
-// axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
-
-// const AppContext = createContext();
-
-
-// export const AppProvider = ({ children }) => {
-
-
-//     const currency = import.meta.env.VITE_CURRENCY || "$";
-//     const navigate = useNavigate();
-//     const { user } = useUser();
-//     const { getToken } = useAuth();
-
-//     const [isOwner, setIsOwner] = useState(false)
-//     const [showHotelReg, setShowHotelReg] = useState(false)
-//     const [searchedCities, setSearchedCities] = useState([])
-
-//     const fetchUser = async () => {
-//         try {
-//             const { data } = await axios.get('/api/user', { headers: { Authorization: `Bearer ${await getToken()}` } })
-//             if (data.success) {
-//                 setIsOwner(data.role === "hotelOwner")
-//                 setSearchedCities(data.recentSearchedCities)
-//             } else {
-//                 //Retry Fetching User Details after 5 seconds
-//                 setTimeout(() => {
-//                     fetchUser()
-//                 }, 5000)
-//             }
-//         } catch (error) {
-//             toast.error(error.message)
-//         }
-//     }
-
-//     useEffect(() => {
-//         if (user) {
-//             fetchUser();
-//         }
-//     }, [user])
-
-//     const value = {
-//         currency, navigate, user, getToken, isOwner, setIsOwner, axios, showHotelReg, setShowHotelReg, searchedCities, setSearchedCities
-//     }
-//     return (
-//         <AppContext.Provider value={value}>
-//             {children}
-//         </AppContext.Provider>
-//     )
-// }
-
-// export const useAppContext = () => useContext(AppContext);
-
-import axios from "axios";
+import axios from "axios"
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 
+
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const AppContext = createContext();
 
+
 export const AppProvider = ({ children }) => {
-  const currency = import.meta.env.VITE_CURRENCY || "$";
-  const navigate = useNavigate();
-  const { user, isLoaded } = useUser();
-  const { getToken } = useAuth();
 
-  const [isOwner, setIsOwner] = useState(false);
-  const [showHotelReg, setShowHotelReg] = useState(false);
-  const [searchedCities, setSearchedCities] = useState([]);
 
-  const fetchUser = async (retry = 0) => {
-    try {
-      const token = await getToken();
+    const currency = import.meta.env.VITE_CURRENCY || "$";
+    const navigate = useNavigate();
+    const { user } = useUser();
+    const { getToken } = useAuth();
 
-      if (!token) {
-        if (retry < 5) {
-          setTimeout(() => fetchUser(retry + 1), 1000);
+    const [isOwner, setIsOwner] = useState(false)
+    const [showHotelReg, setShowHotelReg] = useState(false)
+    const [searchedCities, setSearchedCities] = useState([])
+
+    const fetchUser = async () => {
+        try {
+            const { data } = await axios.get('/api/user', { headers: { Authorization: `Bearer ${await getToken()}` } })
+            if (data.success) {
+                setIsOwner(data.role === "hotelOwner")
+                setSearchedCities(data.recentSearchedCities)
+            } else {
+                //Retry Fetching User Details after 5 seconds
+                setTimeout(() => {
+                    fetchUser()
+                }, 5000)
+            }
+        } catch (error) {
+            toast.error(error.message)
         }
-        return;
-      }
+    }
 
-      const { data } = await axios.get("/api/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (data.success) {
-        setIsOwner(data.role === "hotelOwner");
-        setSearchedCities(data.recentSearchedCities || []);
-      } else {
-        if (retry < 5) {
-          setTimeout(() => fetchUser(retry + 1), 1000);
+    useEffect(() => {
+        if (user) {
+            fetchUser();
         }
-      }
-    } catch (error) {
-      const status = error?.response?.status;
+    }, [user])
 
-      // signup/login ke turant baad 401/404 aaye to retry karo, toast mat dikhao
-      if ((status === 401 || status === 404) && retry < 5) {
-        setTimeout(() => fetchUser(retry + 1), 1000);
-        return;
-      }
-
-      console.log("fetchUser error:", error?.response?.data || error.message);
-      toast.error(
-        error?.response?.data?.message || "Unable to load user data"
-      );
+    const value = {
+        currency, navigate, user, getToken, isOwner, setIsOwner, axios, showHotelReg, setShowHotelReg, searchedCities, setSearchedCities
     }
-  };
-
-  useEffect(() => {
-    if (isLoaded && user?.id) {
-      fetchUser();
-    }
-  }, [isLoaded, user?.id]);
-
-  const value = {
-    currency,
-    navigate,
-    user,
-    getToken,
-    isOwner,
-    setIsOwner,
-    axios,
-    showHotelReg,
-    setShowHotelReg,
-    searchedCities,
-    setSearchedCities,
-  };
-
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-};
+    return (
+        <AppContext.Provider value={value}>
+            {children}
+        </AppContext.Provider>
+    )
+}
 
 export const useAppContext = () => useContext(AppContext);
