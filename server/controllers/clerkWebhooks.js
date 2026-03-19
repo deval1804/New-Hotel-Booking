@@ -188,7 +188,7 @@ const clerkWebhooks = async (req, res) => {
     };
 
     console.log("Webhook type:", type);
-    console.log("User payload:", userData);
+    console.log("Saving user:", userData);
 
     switch (type) {
       case "user.created":
@@ -196,7 +196,7 @@ const clerkWebhooks = async (req, res) => {
         await User.findByIdAndUpdate(
           data.id,
           { $set: userData },
-          { new: true, upsert: true }
+          { upsert: true }
         );
         break;
 
