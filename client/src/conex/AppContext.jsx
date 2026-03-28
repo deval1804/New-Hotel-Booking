@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
-axios.defaults.withCredentials = true;
 
 const AppContext = createContext();
 
@@ -23,31 +22,21 @@ export const AppProvider = ({ children }) => {
     const [showHotelReg, setShowHotelReg] = useState(false)
     const [searchedCities, setSearchedCities] = useState([])
 
-const fetchUser = async () => {
+  const fetchUser = async () => {
     try {
-        // 🔥 Step 1: token lo
-        const token = await getToken();
+        const { data } = await axios.get('/api/user', { 
+            headers: { Authorization: `Bearer ${await getToken()}` } 
+        })
 
-        console.log("TOKEN:", token); // debug
-
-        // 🔥 Step 2: agar token nahi hai to stop
-        if (!token) {
-            console.log("No token found");
-            return;
-        }
-
-        // 🔥 Step 3: API call
-        const { data } = await axios.get('/api/user');
-        // 🔥 Step 4: response handle
         if (data.success) {
-            setIsOwner(data.role === "hotelOwner");
-            setSearchedCities(data.recentSearchedCities);
+            setIsOwner(data.role === "hotelOwner")
+            setSearchedCities(data.recentSearchedCities)
         }
 
     } catch (error) {
-        console.log("FETCH USER ERROR:", error);
+        console.log(error.message)
     }
-};
+}
 
     useEffect(() => {
         if (user) {
