@@ -2,36 +2,18 @@ import { getAuth } from "@clerk/express";
 import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
-  try {
-    const auth = getAuth(req);
 
-    console.log("AUTH:", auth);
-    console.log("USER ID:", auth?.userId);
-    console.log("AUTH HEADER:", req.headers.authorization);
+    const { userId } = getAuth(req);
 
-    if (!auth?.userId) {
-      return res.status(401).json({
-        success: false,
-        message: "not authenticated",
-      });
-    }
+    console.log("USER ID:", userId);   // ⭐ add this
+    console.log("HEADERS:", req.headers.authorization);   
 
-    const user = await User.findById(auth.userId);
+    if (!userId) {
+        return res.json({ success: false, message: "not authenticated" });
+    } 
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found in database",
-      });
-    }
-
+    const user = await User.findById(userId);
     req.user = user;
+
     next();
-  } catch (error) {
-    console.log("Protect error:", error);
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
 };

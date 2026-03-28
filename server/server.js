@@ -71,39 +71,32 @@
 // });
 
 
-import "dotenv/config";
 import express from "express";
+import "dotenv/config";
 import cors from "cors";
-import { clerkMiddleware } from "@clerk/express";
 import connectDB from "./configs/db.js";
-import connectCloudinary from "./configs/cloudinary.js";
+import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoutes.js";
 import hotelRouter from "./routes/hotelRoutes.js";
+import connectCloudinary from "./configs/cloudinary.js";
 import roomRouter from "./routes/roomRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
-
-const app = express();
 
 connectDB();
 connectCloudinary();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+const app = express();
 
-app.post("/api/clerk", express.raw({ type: "application/json" }), clerkWebhooks);
-
+app.use(cors());
 app.use(express.json());
 
-app.use(
-  clerkMiddleware({
-    authorizedParties: ["http://localhost:5173"],
-  })
-);
+// ⭐ Clerk middleware first
+app.use(clerkMiddleware());
+
+// ⭐ Webhook raw body
+app.use("/api/clerk", express.raw({ type: "application/json" }));
+app.use("/api/clerk", clerkWebhooks);
 
 app.get("/", (req, res) => {
   res.send("API is working");
@@ -115,6 +108,7 @@ app.use("/api/room", roomRouter);
 app.use("/api/booking", bookingRouter);
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
