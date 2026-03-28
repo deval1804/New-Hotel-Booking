@@ -122,10 +122,10 @@ const clerkWebhooks = async (req, res) => {
     };
 
     // 🔥 FIX HERE
-    const payload = await whook.verify(
-      req.body.toString(),
-      headers
-    );
+ const payload = await whook.verify(
+  req.body.toString(),
+  headers
+);
 
     const { data, type } = payload;
 

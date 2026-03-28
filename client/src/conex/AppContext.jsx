@@ -22,21 +22,36 @@ export const AppProvider = ({ children }) => {
     const [showHotelReg, setShowHotelReg] = useState(false)
     const [searchedCities, setSearchedCities] = useState([])
 
-  const fetchUser = async () => {
+const fetchUser = async () => {
     try {
-        const { data } = await axios.get('/api/user', { 
-            headers: { Authorization: `Bearer ${await getToken()}` } 
-        })
+        // 🔥 Step 1: token lo
+        const token = await getToken();
 
+        console.log("TOKEN:", token); // debug
+
+        // 🔥 Step 2: agar token nahi hai to stop
+        if (!token) {
+            console.log("No token found");
+            return;
+        }
+
+        // 🔥 Step 3: API call
+        const { data } = await axios.get('/api/user', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        // 🔥 Step 4: response handle
         if (data.success) {
-            setIsOwner(data.role === "hotelOwner")
-            setSearchedCities(data.recentSearchedCities)
+            setIsOwner(data.role === "hotelOwner");
+            setSearchedCities(data.recentSearchedCities);
         }
 
     } catch (error) {
-        console.log(error.message)
+        console.log("FETCH USER ERROR:", error);
     }
-}
+};
 
     useEffect(() => {
         if (user) {

@@ -2,18 +2,27 @@ import { getAuth } from "@clerk/express";
 import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
+    try {
+        const auth = getAuth(req);
 
-    const { userId } = getAuth(req);
+        console.log("AUTH:", auth);
 
-    console.log("USER ID:", userId);   // ⭐ add this
-    console.log("HEADERS:", req.headers.authorization);   
+        if (!auth || !auth.userId) {
+            return res.status(401).json({
+                success: false,
+                message: "not authenticated"
+            });
+        }
 
-    if (!userId) {
-        return res.json({ success: false, message: "not authenticated" });
-    } 
+        req.userId = auth.userId;
 
-    const user = await User.findById(userId);
-    req.user = user;
+        next();
 
-    next();
+    } catch (error) {
+        console.log("ERROR:", error);
+        return res.status(401).json({
+            success: false,
+            message: "authentication failed"
+        });
+    }
 };

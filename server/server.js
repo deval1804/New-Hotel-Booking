@@ -88,11 +88,13 @@ connectCloudinary();
 
 const app = express();
 
+// ⭐ Clerk middleware first
+app.use(clerkMiddleware());
+
 app.use(cors());
 app.use(express.json());
 
-// ⭐ Clerk middleware first
-app.use(clerkMiddleware());
+
 
 // ⭐ Webhook raw body
 app.use("/api/clerk", express.raw({ type: "application/json" }));
