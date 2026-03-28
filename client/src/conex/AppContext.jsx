@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
 
 const AppContext = createContext();
 
@@ -36,12 +37,7 @@ const fetchUser = async () => {
         }
 
         // 🔥 Step 3: API call
-        const { data } = await axios.get('/api/user', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-
+        const { data } = await axios.get('/api/user');
         // 🔥 Step 4: response handle
         if (data.success) {
             setIsOwner(data.role === "hotelOwner");

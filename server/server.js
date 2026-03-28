@@ -91,7 +91,10 @@ const app = express();
 // ⭐ Clerk middleware first
 app.use(clerkMiddleware());
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.json());
 
 

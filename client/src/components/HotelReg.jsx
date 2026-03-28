@@ -19,19 +19,18 @@ const HotelReg = () => {
 
             const token = await getToken();   // 🔥 pehle token lo
 
-console.log("TOKEN:", token);     // debug
+            console.log("TOKEN:", token);     // debug
 
-if (!token) {
-    toast.error("Login required");
-    return;
-}
+            if (!token) {
+                toast.error("Login required");
+                return;
+            }
 
 
             const { data } = await axios.post(
-                `/api/hotel`,
-                { name, contact, address, city },
-                { headers: { Authorization: `Bearer ${await getToken()}` } }
-            )
+    `/api/hotel`,
+    { name, contact, address, city }
+);
 
             if (data.success) {
                 toast.success(data.message)
