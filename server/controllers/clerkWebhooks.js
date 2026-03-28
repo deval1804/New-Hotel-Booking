@@ -121,7 +121,11 @@ const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"]
     };
 
-    const payload = await whook.verify(req.body, headers);
+    // 🔥 FIX HERE
+    const payload = await whook.verify(
+      req.body.toString(),
+      headers
+    );
 
     const { data, type } = payload;
 
@@ -133,7 +137,8 @@ const clerkWebhooks = async (req, res) => {
       recentSearchedCities: []
     };
 
-    console.log("Saving user:", userData);
+    console.log("🔥 Webhook HIT:", type);
+    console.log("🔥 Saving user:", userData);
 
     switch (type) {
 
@@ -148,16 +153,13 @@ const clerkWebhooks = async (req, res) => {
       case "user.deleted":
         await User.findByIdAndDelete(data.id);
         break;
-
-      default:
-        break;
     }
 
     res.json({ success: true });
 
   } catch (error) {
-    console.log("Webhook error:", error);
-    res.json({ success: false });
+    console.log("❌ Webhook error:", error.message);
+    res.status(400).json({ success: false });
   }
 };
 
