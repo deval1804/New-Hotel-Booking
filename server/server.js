@@ -89,14 +89,15 @@ connectCloudinary();
 const app = express();
 
 app.use(cors());
+
+// Clerk webhook MUST come before express.json()
+app.post("/api/clerk", express.raw({ type: "application/json" }), clerkWebhooks);
+
+// Normal parsers after webhook
 app.use(express.json());
 
-// ⭐ Clerk middleware first
+// Clerk auth middleware before protected routes
 app.use(clerkMiddleware());
-
-// ⭐ Webhook raw body
-app.use("/api/clerk", express.raw({ type: "application/json" }));
-app.use("/api/clerk", clerkWebhooks);
 
 app.get("/", (req, res) => {
   res.send("API is working");
@@ -108,7 +109,6 @@ app.use("/api/room", roomRouter);
 app.use("/api/booking", bookingRouter);
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

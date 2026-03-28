@@ -23,20 +23,29 @@ export const AppProvider = ({ children }) => {
     const [searchedCities, setSearchedCities] = useState([])
 
   const fetchUser = async () => {
-    try {
-        const { data } = await axios.get('/api/user', { 
-            headers: { Authorization: `Bearer ${await getToken()}` } 
-        })
+  try {
+    const token = await getToken();
+    console.log("TOKEN:", token);
 
-        if (data.success) {
-            setIsOwner(data.role === "hotelOwner")
-            setSearchedCities(data.recentSearchedCities)
-        }
+    const { data } = await axios.get("/api/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-    } catch (error) {
-        console.log(error.message)
+    console.log("USER API RESPONSE:", data);
+
+    if (data.success) {
+      setIsOwner(data.role === "hotelOwner");
+      setSearchedCities(data.recentSearchedCities);
+    } else {
+      toast.error(data.message);
     }
-}
+  } catch (error) {
+    console.log(error);
+    toast.error(error.message);
+  }
+};
 
     useEffect(() => {
         if (user) {
