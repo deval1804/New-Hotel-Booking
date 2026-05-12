@@ -76,7 +76,7 @@ import "dotenv/config";
 import cors from "cors";
 import connectDB from "./configs/db.js";
 import { clerkMiddleware } from "@clerk/express";
-import clerkWebhooks from "./controllers/clerkWebhooks.js";
+// import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoutes.js";
 import hotelRouter from "./routes/hotelRoutes.js";
 import connectCloudinary from "./configs/cloudinary.js";
@@ -96,7 +96,7 @@ app.use(clerkMiddleware());
 
 // ⭐ Webhook raw body
 app.use("/api/clerk", express.raw({ type: "application/json" }));
-app.use("/api/clerk", clerkWebhooks);
+// app.use("/api/clerk", clerkWebhooks);
 
 app.get("/", (req, res) => {
   res.send("API is working");
