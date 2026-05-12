@@ -75,7 +75,7 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import connectDB from "./configs/db.js";
-import { clerkMiddleware } from "@clerk/express";
+// import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoutes.js";
 import hotelRouter from "./routes/hotelRoutes.js";
@@ -92,7 +92,7 @@ app.use(cors());
 app.use(express.json());
 
 // ⭐ Clerk middleware first
-app.use(clerkMiddleware());
+// app.use(clerkMiddleware());
 
 // ⭐ Webhook raw body
 app.use("/api/clerk", express.raw({ type: "application/json" }));
